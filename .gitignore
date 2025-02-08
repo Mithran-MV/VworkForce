@@ -1,0 +1,8 @@
+agent/.env
+secretvault/.env
+agent/node_modules
+secretvault/node_modules
+agent/package.json
+secretvault/package.json
+client/node_modules
+client/package.json
