@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Your Collection Schema",
+    "type": "object",
+    "properties": {
+      "_id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "contract_name": {
+        "type": "object",
+        "properties": {
+          "$share": {
+            "type": "string"
+          }
+        }
+      },
+      "contract_text": {
+        "type": "object",
+        "properties": {
+          "$share": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "required": ["_id", "contract_name", "contract_text"],
+    "additionalProperties": false
+  }
+  
