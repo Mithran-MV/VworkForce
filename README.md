@@ -23,10 +23,46 @@ This approach ensures trustless, secure, and decentralized AI services with on-c
 - **On-Chain Transactions**: Coinbase AgentKit provides robust cryptocurrency payment solutions.
 - **Censorship-Resistant Hosting**: OpSec ensures reliable decentralized infrastructure.
 
+
+## Screenshots
+
+### Homepage
+![Homepage](https://github.com/user-attachments/assets/95bf4b64-b619-40a2-8380-a2ef0703a0c3)
+![Homepage](https://github.com/user-attachments/assets/e4a1168f-5ad9-4fc2-ad98-afd4bd1f2494)
+
+### AI Marketplace
+![AI Marketplace](https://github.com/user-attachments/assets/d3d41a0b-3fea-4fd4-9030-e52c0b06c51d)
+![AI Marketplace](https://github.com/user-attachments/assets/b094b9cd-f6aa-4b1b-8b29-46cb15927db6)
+
+### Payment Process
+![Payment Process](https://github.com/user-attachments/assets/2a35e6c0-3256-4d92-ad8b-c47fcc044b43)
+![Payment Process](https://github.com/user-attachments/assets/f064d951-857d-41ea-a7b0-222d02be8f1e)
+
+### AI Legal Consultant
+![AI Legal Consultant](https://github.com/user-attachments/assets/6fb131a8-a228-4dd7-aedf-919ca8c20559)
+![AI Legal Consultant](https://github.com/user-attachments/assets/3a6b948a-1342-4e6e-b8b7-3c9556ac0d98)
+![AI Legal Consultant](https://github.com/user-attachments/assets/2f183409-b9f9-4ec1-8c4a-fca31a8542cd)
+
+### AI Compliance Officer
+![AI Compliance Officer](https://github.com/user-attachments/assets/3a49067c-20c7-4133-aca1-8457c324864f)
+![AI Compliance Officer](https://github.com/user-attachments/assets/dc133f43-fcaf-4253-b040-6effda114057)
+![AI Compliance Officer](https://github.com/user-attachments/assets/e97d5dea-6520-4871-b759-65c812bb21ae)
+
+### AI Contract Drafting
+![AI Legal Consultant](https://github.com/user-attachments/assets/4ac7cd62-232a-43d8-a552-02f12e642a8c)
+![AI Legal Consultant](https://github.com/user-attachments/assets/3df2b577-16b4-4c59-ab69-79777e660538)
+![AI Legal Consultant](https://github.com/user-attachments/assets/936159c0-fd3d-45e2-8535-d565dfc2001d)
+![AI Legal Consultant](https://github.com/user-attachments/assets/e9c5a579-405d-461d-bb2b-342472014c77)
+![AI Legal Consultant](https://github.com/user-attachments/assets/eb279631-9a6f-4e78-8f33-afbccd12666c)
+![AI Legal Consultant](https://github.com/user-attachments/assets/8c1d0183-936d-4db0-a065-6dd41732d521)
+![AI Legal Consultant](https://github.com/user-attachments/assets/361ede0f-fd47-4e9b-8a0d-76337ebb448b)
+
+
+
+
 ## Tech Stack
 - **Frontend**: Next.js, React.js, Tailwind CSS
 - **Backend**: Node.js, Express.js (Separate services for Agent and SecretVault)
-- **Blockchain**: Ethereum, Smart Contracts (Solidity)
 - **Authentication**: Privy
 - **Storage**: Nillion SecretVault
 - **Payments**: Coinbase AgentKit
