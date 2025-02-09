@@ -1,19 +1,24 @@
-import { SecretVaultWrapper } from "nillion-sv-wrappers";
-import { orgConfig } from "./nillionOrgConfig.js";
-import fs from "fs";
+import { SecretVaultWrapper } from 'nillion-sv-wrappers';
+import { orgConfig } from './nillionOrgConfig.js';
+import schema from './schema.json' assert { type: 'json' };
 
-const schema = JSON.parse(fs.readFileSync("./schema.json", "utf-8"));
+async function main() {
+  try {
+    const org = new SecretVaultWrapper(
+      orgConfig.nodes,
+      orgConfig.orgCredentials
+    );
+    await org.init();
 
-async function createSchema() {
-  const vault = new SecretVaultWrapper(
-    orgConfig.nodes,
-    orgConfig.orgCredentials
-  );
-
-  await vault.init();
-
-  const schemaId = await vault.createSchema(schema);
-  console.log(`✅ Schema created with ID: ${schemaId}`);
+    // Create a new collection schema for all nodes in the org
+    const collectionName = 'Web3 Experience Survey';
+    const newSchema = await org.createSchema(schema, collectionName);
+    console.log('✅ New Collection Schema created for all nodes:', newSchema);
+    console.log('👀 Schema ID:', newSchema[0].result.data);
+  } catch (error) {
+    console.error('❌ Failed to use SecretVaultWrapper:', error.message);
+    process.exit(1);
+  }
 }
 
-createSchema();
+main();

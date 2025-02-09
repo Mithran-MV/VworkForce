@@ -2,27 +2,52 @@ import { SecretVaultWrapper } from 'nillion-sv-wrappers';
 import { v4 as uuidv4 } from 'uuid';
 import { orgConfig } from './nillionOrgConfig.js';
 
-const SCHEMA_ID = 'YOUR_SCHEMA_ID';
-
-const vault = new SecretVaultWrapper(
-  orgConfig.nodes,
-  orgConfig.orgCredentials,
-  SCHEMA_ID
-);
-
-await vault.init();
+const SCHEMA_ID = 'b5bc0c08-52a0-4a17-8d77-4c80031da21c';
 
 const data = [
   {
-    _id: uuidv4(),
-    contract_name: { $allot: 'Sample Contract' },
-    contract_text: { $allot: 'This is the contract text.' },
+    contract_type: { $allot: 'Vitalik Buterin' },
+    contract_description: { $allot: 'Vitalik Buterin' },
+    contract_content: { $allot: 'Vitalik Buterin' }
+
   },
 ];
 
-const response = await vault.writeToNodes(data);
-console.log('Data written:', response);
+async function main() {
+  try {
+    // Create a secret vault wrapper and initialize the SecretVault collection to use
+    const collection = new SecretVaultWrapper(
+      orgConfig.nodes,
+      orgConfig.orgCredentials,
+      SCHEMA_ID
+    );
+    await collection.init();
 
-const query = { _id: data[0]._id };
-const retrievedData = await vault.readFromNodes(query);
-console.log('Data retrieved:', retrievedData);
+    // Write collection data to nodes encrypting the specified fields ahead of time
+    const dataWritten = await collection.writeToNodes(data);
+    console.log(
+      '👀 Data written to nodes:',
+      JSON.stringify(dataWritten, null, 2)
+    );
+
+    // Get the ids of the SecretVault records created
+    const newIds = [
+      ...new Set(dataWritten.map((item) => item.result.data.created).flat()),
+    ];
+    console.log('uploaded record ids:', newIds);
+
+    // Read all collection data from the nodes, decrypting the specified fields
+    const decryptedCollectionData = await collection.readFromNodes({});
+
+    // Log first 5 records
+    console.log(
+      'Most recent records',
+      decryptedCollectionData.slice(0, data.length)
+    );
+  } catch (error) {
+    console.error('❌ SecretVaultWrapper error:', error.message);
+    process.exit(1);
+  }
+}
+
+main();
