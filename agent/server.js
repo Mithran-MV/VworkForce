@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const { AgentKit } = require("@coinbase/agentkit");
 const { OpenAI } = require("openai");
 const { ethers } = require("ethers");
+const { Readable } = require("stream");
 
 const app = express();
 app.use(cors());
@@ -37,6 +38,41 @@ const openai = new OpenAI({
 
 // ✅ Ethereum provider for payments on Base Sepolia
 const provider = new ethers.JsonRpcProvider(process.env.BASE_SEPOLIA_RPC);
+
+
+app.get("/agent-wallet", async (req, res) => {
+  try {
+    const agent = await agentKit.getAgent();
+    res.json({ agentId: agent.agentId, walletAddress: agent.wallet.address });
+  } catch (error) {
+    console.error("❌ Agent Wallet Error:", error);
+    res.status(500).json({ error: "Failed to fetch AI agent wallet" });
+  }
+});
+
+// 🔹 **Agent-to-Agent Transaction**
+app.post("/agent-pay", async (req, res) => {
+  const { recipientAgentId, amount } = req.body;
+
+  if (!recipientAgentId || !amount || isNaN(parseFloat(amount))) {
+    return res.status(400).json({ error: "Invalid recipient or amount" });
+  }
+
+  try {
+    console.log(`💰 Sending ${amount} ETH to Agent ${recipientAgentId}`);
+
+    const tx = await agentKit.send({
+      recipientAgentId,
+      amount: ethers.parseEther(amount.toString()),
+    });
+
+    res.status(200).json({ message: "Payment successful", txHash: tx.hash });
+  } catch (error) {
+    console.error("❌ Agent-to-Agent Payment Error:", error);
+    res.status(500).json({ error: "Payment failed", details: error.message });
+  }
+});
+
 
 // 🔹 AI Contract Drafting Agent
 app.post("/draft-contract", async (req, res) => {
@@ -94,6 +130,7 @@ app.post("/ai-legal-consult", async (req, res) => {
   }
 });
 
+
 app.post("/ai-compliance-officer", async (req, res) => {
   const { userQuery } = req.body;
 
@@ -102,23 +139,29 @@ app.post("/ai-compliance-officer", async (req, res) => {
   }
 
   try {
-    console.log(`🔍 AI Legal Consultant received query: ${userQuery}`);
+    console.log(`🔍 AI Compliance Officer received query: ${userQuery}`);
 
+    // Ensure OpenAI API response is handled properly
     const response = await openai.chat.completions.create({
       model: "gpt-4",
-      messages: [{ role: "system", content: "You are an AI legal compliance officer." }, { role: "user", content: userQuery }],
+      messages: [{ role: "system", content: "You are an AI compliance officer providing expert regulatory and legal guidance." }, 
+                 { role: "user", content: userQuery }],
     });
 
     if (!response.choices || response.choices.length === 0) {
-      throw new Error("No response from OpenAI");
+      return res.status(500).json({ error: "No response from OpenAI" });
     }
 
-    res.json({ response: response.choices[0].message.content });
+    // Ensure response is sent only once
+    return res.json({ response: response.choices[0].message.content.trim() });
+
   } catch (error) {
-    console.error("❌ AI Legal Consultant Error:", error);
-    res.status(500).json({ error: "AI Agent failed to generate a response", details: error.message });
+    console.error(`❌ Compliance Agent Error:`, error);
+    return res.status(500).json({ error: "Compliance Agent failed to generate a response", details: error.message });
   }
 });
+
+
 
 
 // 🔹 Payment function using Base Sepolia ETH

@@ -84,38 +84,46 @@ app.post("/store-contract", async (req, res) => {
  * 🔍 Retrieve Contract from Nillion SecretVault
  * Endpoint: GET /retrieve-contract/:docId
  */
+/**
+ * 🔍 Retrieve Contract from Nillion SecretVault
+ * Endpoint: GET /retrieve-contract/:docId
+ */
 app.get("/retrieve-contract/:docId", async (req, res) => {
-  try {
-    const { docId } = req.params;
-    if (!docId) return res.status(400).json({ error: "⚠️ Document ID is required." });
-
-    console.log(`🔍 Retrieving contract with Document ID: ${docId}`);
-
-    // Initialize SecretVault
-    const collection = new SecretVaultWrapper(orgConfig.nodes, orgConfig.orgCredentials, SCHEMA_ID);
-    await collection.init();
-
-    // Retrieve contract from SecretVault
-    const filter = { id: docId };
-    const decryptedData = await collection.readFromNodes(filter);
-    console.log("📜 Retrieved Data:", decryptedData);
-
-    if (!decryptedData.length) {
-      return res.status(404).json({ error: "❌ No contract found." });
+    try {
+      const { docId } = req.params;
+      if (!docId) return res.status(400).json({ error: "⚠️ Document ID is required." });
+  
+      console.log(`🔍 Retrieving contract with Document ID: ${docId}`);
+  
+      // Initialize SecretVault
+      const collection = new SecretVaultWrapper(orgConfig.nodes, orgConfig.orgCredentials, SCHEMA_ID);
+      await collection.init();
+  
+      // Retrieve contract from SecretVault (Use _id or match actual stored field)
+      const filter = { _id: docId }; 
+      const decryptedData = await collection.readFromNodes(filter);
+  
+      console.log("📜 Raw Retrieved Data:", decryptedData); // Debugging log
+  
+      if (!decryptedData || decryptedData.length === 0) {
+        return res.status(404).json({ error: "❌ No contract found." });
+      }
+  
+      // Extract Correct Fields
+      const contractRecord = decryptedData[0]; 
+      res.json({
+        contractType: contractRecord.contract_type || "Unknown",
+        contractDescription: contractRecord.contract_description || "No Description",
+        contractContent: contractRecord.contract_content || "No Content",
+        message: "✅ Contract retrieved successfully!"
+      });
+  
+    } catch (error) {
+      console.error("❌ Error retrieving contract from SecretVault:", error.message);
+      res.status(500).json({ error: "Failed to retrieve contract." });
     }
-
-    const contract = decryptedData[0];
-    res.json({
-      contractType: contract.contract_type,
-      contractDescription: contract.contract_description,
-      contractContent: contract.contract_content,
-      message: "✅ Contract retrieved successfully!"
-    });
-  } catch (error) {
-    console.error("❌ Error retrieving contract from SecretVault:", error.message);
-    res.status(500).json({ error: "Failed to retrieve contract." });
-  }
-});
+  });
+  
 
 /**
  * 📜 List All Stored Contracts for Debugging
