@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  client:
+    name: Client (lint, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - run: npm ci
+      - run: npx next lint
+
+      # The build prerenders every page, which is what caught the redirect that
+      # ran during render on /marketplace.
+      - run: npx next build
+
+  services:
+    name: Agent and SecretVault (install, parse)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [agent, secretvault]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ${{ matrix.service }}/package-lock.json
+
+      - name: Install
+        working-directory: ${{ matrix.service }}
+        run: npm ci
+
+      # Both services need live credentials to do anything, so this checks what
+      # can be checked without them: dependencies resolve and every module parses.
+      - name: Parse
+        working-directory: ${{ matrix.service }}
+        run: |
+          for file in *.js; do
+            node --check "$file"
+          done
+
+  secrets:
+    name: No credentials committed
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # This repository has had a wallet seed and an API key committed to it
+      # before. This makes the next attempt fail the build instead of reaching
+      # the default branch.
+      - name: Scan tracked files
+        run: |
+          found=0
+          if git ls-files | grep -E '(^|/)\.env$|wallet_data\.json$' | grep -q .; then
+            echo "::error::a .env or wallet_data.json is tracked"
+            git ls-files | grep -E '(^|/)\.env$|wallet_data\.json$'
+            found=1
+          fi
+          # a bare 64-character hex string in source is almost always a key
+          if git grep -nE '\b[0-9a-fA-F]{64}\b' -- ':!*package-lock.json' ':!*.md' | grep -q .; then
+            echo "::error::a 64-character hex literal is committed - is it a key?"
+            git grep -nE '\b[0-9a-fA-F]{64}\b' -- ':!*package-lock.json' ':!*.md' | cut -c1-80
+            found=1
+          fi
+          exit $found
