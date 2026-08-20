@@ -1,7 +1,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Marketplace() {
   const { authenticated, user, logout } = usePrivy();
@@ -9,8 +9,17 @@ export default function Marketplace() {
   const [loading, setLoading] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState(null);
 
+  // The redirect belongs in an effect, not in render: next build prerenders this
+  // page, and there is no router instance during prerendering - calling push()
+  // while rendering failed the build with "No router instance found". index.js
+  // and login.js already redirect this way.
+  useEffect(() => {
+    if (!authenticated) {
+      router.push("/login");
+    }
+  }, [authenticated, router]);
+
   if (!authenticated) {
-    router.push("/login");
     return <p style={{ textAlign: "center", fontSize: "18px", marginTop: "20px", fontWeight: "bold" }}>Redirecting to login...</p>;
   }
 
