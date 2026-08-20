@@ -1,3 +1,4 @@
+import './loadEnv.js';
 import { SecretVaultWrapper } from 'nillion-sv-wrappers';
 import { orgConfig } from './nillionOrgConfig.js';
 import schema from './schema.json' assert { type: 'json' };

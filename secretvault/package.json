@@ -1,19 +1,21 @@
 {
-  "name": "secretvault",
+  "name": "vworkforce-secretvault",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "schema": "./genrateSchema.sh"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": "",
+  "license": "MIT",
+  "description": "Nillion SecretVault service for VworkForce.",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "nillion-sv-wrappers": "^1.0.9",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "dotenv": "^16.4.7"
   }
 }

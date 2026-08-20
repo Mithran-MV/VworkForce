@@ -1,3 +1,4 @@
+import './loadEnv.js';
 import { SecretVaultWrapper } from 'nillion-sv-wrappers';
 import { v4 as uuidv4 } from 'uuid';
 import { orgConfig } from './nillionOrgConfig.js';

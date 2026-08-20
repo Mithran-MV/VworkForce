@@ -1,12 +1,32 @@
+/**
+ * Nillion SecretVault organisation configuration.
+ *
+ * The credentials come from the environment. The previous version of this file
+ * carried a secret key literally, under a comment that said "in a production
+ * environment, make sure to put your org's credentials in environment
+ * variables" - advice the file itself did not follow, in a public repository.
+ *
+ * Copy .env.example to .env and fill it in. .env is gitignored.
+ */
+
+function required(name) {
+  const value = process.env[name];
+
+  if (!value) {
+    throw new Error(
+      `${name} is not set. Copy secretvault/.env.example to secretvault/.env and fill it in.`,
+    );
+  }
+
+  return value;
+}
+
 export const orgConfig = {
-  // demo org credentials
-  // in a production environment, make sure to put your org's credentials in environment variables
   orgCredentials: {
-    secretKey:
-      'a786abe58f933e190d01d05b467838abb1e391007a674d8a3aef106e15a0bf5a',
-    orgDid: 'did:nil:testnet:nillion1vn49zpzgpagey80lp4xzzefaz09kufr5e6zq8c',
+    secretKey: required('NILLION_SECRET_KEY'),
+    orgDid: required('NILLION_ORG_DID'),
   },
-  // demo node config
+  // The node set is public infrastructure, not a credential.
   nodes: [
     {
       url: 'https://nildb-zy8u.nillion.network',
