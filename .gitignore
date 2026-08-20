@@ -1,8 +1,27 @@
-agent/.env
-secretvault/.env
-agent/node_modules
-secretvault/node_modules
-agent/package.json
-secretvault/package.json
-client/node_modules
-client/package.json
+# dependencies - these are 16,000 files and 120 MB, and they are reproducible
+# from package.json
+node_modules/
+**/node_modules/
+
+# secrets. Note: adding a file here does nothing if it is already tracked -
+# it has to be removed from the index with "git rm --cached" as well.
+.env
+.env.*
+!.env.example
+
+# the agent persists its CDP wallet here - this file contains the seed, which is
+# the wallet. It must never be committed.
+wallet_data.json
+**/wallet_data.json
+
+# build output
+.next/
+dist/
+build/
+out/
+
+# logs and os cruft
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
