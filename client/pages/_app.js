@@ -4,7 +4,9 @@ import Layout from "../components/Layout";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <PrivyProvider appId="cm6u7t23v01x5fnsrt41q4pbg">
+    <PrivyProvider
+      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || "cm6u7t23v01x5fnsrt41q4pbg"}
+    >
       <Layout>
         <Component {...pageProps} />
       </Layout>
