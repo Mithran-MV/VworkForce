@@ -104,8 +104,8 @@ This approach ensures trustless, secure, and decentralized AI services with on-c
 ### Steps
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo/v-workforce.git
-   cd v-workforce
+   git clone https://github.com/Mithran-MV/VworkForce.git
+   cd VworkForce
    ```
 2. Install dependencies for the frontend:
    ```sh
@@ -119,13 +119,20 @@ This approach ensures trustless, secure, and decentralized AI services with on-c
    ```
 4. Install dependencies for the SecretVault service:
    ```sh
-   cd ../secretVault
+   cd ../secretvault
    npm install
    ```
-5. Set up environment variables:
-   - Create a `.env.local` file in the `client` directory.
-   - Create a `.env` file in both `agent` and `secretVault` directories.
-   - Add necessary credentials (API keys, smart contract addresses, etc.).
+5. Set up environment variables. Each service ships an example listing exactly
+   what it reads:
+   ```sh
+   cp client/.env.local.example client/.env.local
+   cp agent/.env.example        agent/.env
+   cp secretvault/.env.example  secretvault/.env
+   ```
+   Then fill them in. All three are gitignored — **do not commit real values**.
+   `CDP_API_KEY_PRIVATE_KEY` and `NILLION_SECRET_KEY` are private keys; the agent
+   also writes its wallet to `agent/wallet_data.json`, which is ignored for the
+   same reason.
 
 6. Run the services:
    - Start the frontend:
@@ -140,7 +147,7 @@ This approach ensures trustless, secure, and decentralized AI services with on-c
      ```
    - Start the SecretVault service:
      ```sh
-     cd ../secretVault
+     cd ../secretvault
      node server.js
      ```
 
@@ -159,7 +166,7 @@ We welcome contributions! To contribute:
 4. Push to your fork and submit a pull request.
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the MIT License — see [LICENSE](LICENSE).
 
 ## Future Roadmap
 - Expand AI agents into **Finance**, **HR**, **Healthcare**, and **Customer Support**.
