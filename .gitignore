@@ -7,7 +7,8 @@ node_modules/
 # it has to be removed from the index with "git rm --cached" as well.
 .env
 .env.*
-!.env.example
+# ...but the templates are meant to be committed
+!*.example
 
 # the agent persists its CDP wallet here - this file contains the seed, which is
 # the wallet. It must never be committed.
